@@ -3,51 +3,77 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>IPTV Player</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f4f4f4;
-            text-align: center;
-            padding: 50px;
-        }
-        video {
-            width: 80%;
-            height: auto;
-            border: 2px solid #333;
-            background-color: #000;
-        }
-    </style>
-    <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
+    <title>Channel Info</title>
 </head>
 <body>
+    <h1>Channel Information</h1>
+    <div id="channel-details"></div>
 
-    <h1>Watch Star GOLD (4K)</h1>
-    <video id="iptvPlayer" controls autoplay></video>
+    <script type="text/javascript">
+        // Your JSON data
+        const channelData = {
+            "channel_id": "996",
+            "Updated on": "09/20/2024 20:54:23",
+            "channel_name": "Tata Play Toons+",
+            "channel_url": "https://bpweb7.akamaized.net/bpk-tv/irdeto_com_Channel_1822/output/manifest.mpd",
+            "clearkeys": [
+              {
+                "source": "media_segment",
+                "hex": "d36bbbc07ed259949060fdb784f28e86:128522e4e34a308a3dfebc55b0688838",
+                "channel_kid": "D36BBBC0-7ED2-5994-9060-FDB784F28E86",
+                "base64": {
+                  "keys": [
+                    {
+                      "kty": "oct",
+                      "k": "EoUi5ONKMIo9/rxVsGiIOA",
+                      "kid": "02u7wH7SWZSQYP23hPKOhg"
+                    }
+                  ],
+                  "type": "temporary"
+                },
+                "pssh": "AAAAOHBzc2gAAAAA7e+LqXnWSs6jyCfc1R0h7QAAABgSENNru8B+0lmUkGD9t4TyjoY4lJC2twY="
+              },
+              {
+                "source": "initialization_segment",
+                "hex": "f0677952d2e056dc92be5cf4785f34fa:4d643dd65ec0f1219a0315c4bb77e012",
+                "channel_kid": "F0677952-D2E0-56DC-92BE-5CF4785F34FA",
+                "base64": {
+                  "keys": [
+                    {
+                      "kty": "oct",
+                      "k": "TWQ91l7A8SGaAxXEu3fgEg",
+                      "kid": "8Gd5UtLgVtySvlz0eF80+g"
+                    }
+                  ],
+                  "type": "temporary"
+                },
+                "pssh": "AAAAOHBzc2gAAAAA7e+LqXnWSs6jyCfc1R0h7QAAABgSEPBneVLS4Fbckr5c9HhfNPo49Ne1twY="
+              }
+            ]
+          };
 
-    <script>
-        // The stream URL from the M3U playlist
-        const streamUrl = 'http://xsmarters.top:8080/7251892/2587435/109959';
-
-        const video = document.getElementById('iptvPlayer');
-        
-        if (Hls.isSupported()) {
-            const hls = new Hls();
-            hls.loadSource(streamUrl);
-            hls.attachMedia(video);
-            hls.on(Hls.Events.MANIFEST_PARSED, function() {
-                video.play();
-            });
-        } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
-            // This is a fallback for Safari or other browsers that support HLS natively
-            video.src = streamUrl;
-            video.addEventListener('loadedmetadata', function() {
-                video.play();
-            });
-        } else {
-            console.error('HLS not supported in your browser.');
+        // Function to display the channel data on the page
+        function displayChannelDetails(data) {
+            const detailsDiv = document.getElementById('channel-details');
+            detailsDiv.innerHTML = `
+                <p><strong>Channel Name:</strong> ${data.channel_name}</p>
+                <p><strong>Channel ID:</strong> ${data.channel_id}</p>
+                <p><strong>Updated on:</strong> ${data["Updated on"]}</p>
+                <p><strong>Channel URL:</strong> <a href="${data.channel_url}">${data.channel_url}</a></p>
+                <p><strong>Clear Keys:</strong></p>
+                <ul>
+                    ${data.clearkeys.map(key => `
+                        <li><strong>Source:</strong> ${key.source}<br>
+                            <strong>Hex:</strong> ${key.hex}<br>
+                            <strong>Base64 Key:</strong> ${key.base64.keys[0].k}<br>
+                            <strong>PSSH:</strong> ${key.pssh}
+                        </li>`).join('')}
+                </ul>
+            `;
         }
-    </script>
 
+        // Call the function to display the data
+        displayChannelDetails(channelData);
+    </script>
 </body>
 </html>
